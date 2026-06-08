@@ -14,6 +14,7 @@ This folder contains n8n workflows for Facebook social media integration with **
 |----------|--------|----------|---------|
 | Post Content | POST | `/facebook/posts` | Create Facebook page posts |
 | Post Comment | POST | `/facebook/comments` | Comment on Facebook posts |
+| Reply to Comment | PUT | `/facebook/comments/reply` | Reply to existing comments |
 
 ---
 

@@ -58,10 +58,14 @@ n8n-workflows/
 │   │   ├── AUTHENTICATION-VERIFICATION-SUMMARY.md  # Verification results
 │   │   └── SUMMARY.md                 # Project summary
 │   │
-│   └── scripts/                       # Automation scripts
-│       ├── verify-authentication.py   # Verify auth configuration
-│       ├── update_workflows.py        # Update workflow URLs
-│       └── update_workflows.sh        # Shell script alternative
+│   ├── scripts/                       # Automation scripts
+│   │   ├── verify-authentication.py   # Verify auth configuration
+│   │   ├── update_workflows.py        # Update workflow URLs
+│   │   └── update_workflows.sh        # Shell script alternative
+│   │
+│   └── project-info/                  # Project-specific documents
+│       ├── README.md                   # Project info index
+│       └── SCHEMA_CHANGELOG.md         # Schema version history
 │
 ├── toast/                             # Toast POS integration
 │   ├── README.md                      # Toast documentation
@@ -207,6 +211,14 @@ n8n-workflows/
 - **Purpose:** Shell script alternative for updating workflows
 - **Usage:** `bash docs/scripts/update_workflows.sh`
 - **Note:** Already executed; kept for reference
+
+---
+
+### Project Information (`docs/project-info/`)
+
+#### [SCHEMA_CHANGELOG.md](./project-info/SCHEMA_CHANGELOG.md)
+- **Purpose:** Track database schema changes
+- **Contents:** Version history, migrations, schema updates
 
 ---
 
