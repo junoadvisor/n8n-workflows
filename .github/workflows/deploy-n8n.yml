@@ -10,6 +10,15 @@ on:
         type: choice
         options:
           - all
+          - single
+          - integration
+        default: 'all'
+      
+      integration:
+        description: 'Integration (if deployment_type is "integration")'
+        required: false
+        type: choice
+        options:
           - toast
           - google
           - yelp
@@ -17,14 +26,30 @@ on:
           - resy
           - instagram
           - facebook
-          - single
-        default: 'all'
+        default: 'toast'
       
       workflow_file:
         description: 'Single workflow file (if deployment_type is "single")'
         required: false
-        type: string
-        default: ''
+        type: choice
+        options:
+          - toast/post-toast-order-workflow.json
+          - toast/get-toast-order-workflow.json
+          - toast/get-toast-menu-workflow.json
+          - toast/get-toast-restaurants-workflow.json
+          - google/get-google-reviews-workflow.json
+          - google/put-google-review-reply-workflow.json
+          - yelp/get-yelp-reviews-workflow.json
+          - yelp/put-yelp-review-reply-workflow.json
+          - opentable/get-opentable-reservations-workflow.json
+          - resy/get-resy-reservations-workflow.json
+          - instagram/post-instagram-content-workflow.json
+          - instagram/post-instagram-comment-workflow.json
+          - instagram/put-instagram-comment-reply-workflow.json
+          - facebook/post-facebook-content-workflow.json
+          - facebook/post-facebook-comment-workflow.json
+          - facebook/put-facebook-comment-reply-workflow.json
+        default: 'toast/post-toast-order-workflow.json'
 
   # Auto-deploy on push to main
   push:
@@ -82,16 +107,20 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             DEPLOYMENT_TYPE="${{ github.event.inputs.deployment_type }}"
             WORKFLOW_FILE="${{ github.event.inputs.workflow_file }}"
+            INTEGRATION="${{ github.event.inputs.integration }}"
           else
             # Auto deployment on push - deploy all workflows
             DEPLOYMENT_TYPE="all"
             WORKFLOW_FILE=""
+            INTEGRATION=""
           fi
           
           echo "deployment_type=${DEPLOYMENT_TYPE}" >> $GITHUB_OUTPUT
           echo "workflow_file=${WORKFLOW_FILE}" >> $GITHUB_OUTPUT
+          echo "integration=${INTEGRATION}" >> $GITHUB_OUTPUT
           echo "📦 Deployment Type: ${DEPLOYMENT_TYPE}"
           echo "📄 Workflow File: ${WORKFLOW_FILE}"
+          echo "🔌 Integration: ${INTEGRATION}"
 
       - name: Deploy workflows
         run: |
@@ -99,6 +128,7 @@ jobs:
           
           DEPLOYMENT_TYPE="${{ steps.scope.outputs.deployment_type }}"
           WORKFLOW_FILE="${{ steps.scope.outputs.workflow_file }}"
+          INTEGRATION="${{ steps.scope.outputs.integration }}"
           
           # Function to deploy a single workflow file
           deploy_workflow() {
@@ -204,15 +234,20 @@ jobs:
               fi
               ;;
             
-            *)
+            integration)
               # Deploy specific integration (toast, google, etc.)
-              if [ ! -d "$DEPLOYMENT_TYPE" ]; then
-                echo "❌ Error: Integration folder not found: $DEPLOYMENT_TYPE"
+              if [ -z "$INTEGRATION" ]; then
+                echo "❌ Error: integration parameter is required when deployment_type is 'integration'"
                 exit 1
               fi
               
-              echo "📦 Deploying $DEPLOYMENT_TYPE workflows..."
-              for file in $DEPLOYMENT_TYPE/*.json; do
+              if [ ! -d "$INTEGRATION" ]; then
+                echo "❌ Error: Integration folder not found: $INTEGRATION"
+                exit 1
+              fi
+              
+              echo "📦 Deploying $INTEGRATION workflows..."
+              for file in $INTEGRATION/*.json; do
                 if [ -f "$file" ]; then
                   if deploy_workflow "$file"; then
                     ((SUCCESS_COUNT++))
@@ -221,6 +256,11 @@ jobs:
                   fi
                 fi
               done
+              ;;
+            
+            *)
+              echo "❌ Error: Invalid deployment type: $DEPLOYMENT_TYPE"
+              exit 1
               ;;
           esac
           

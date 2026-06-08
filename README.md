@@ -317,7 +317,10 @@ This repository includes GitHub Actions workflows for automated deployment to n8
    - Go to **Actions** tab
    - Select **Deploy n8n Workflows**
    - Click **Run workflow**
-   - Choose deployment type (all, toast, google, etc.)
+   - Choose deployment type:
+     - `all` - Deploy all 16 workflows
+     - `integration` - Deploy specific provider (select from dropdown)
+     - `single` - Deploy one workflow (select from dropdown of 16 workflows)
    - Click **Run workflow**
 
 3. **Auto-deployment**:

@@ -113,20 +113,25 @@ It should be automatically committed to your repository.
 #### Deploy All Workflows
 ```
 Deployment Type: all
-Workflow File: (leave empty)
+Integration: (not applicable)
+Single workflow file: (not applicable)
 ```
 
 #### Deploy Specific Integration
 ```
-Deployment Type: toast (or google, yelp, opentable, resy, instagram, facebook)
-Workflow File: (leave empty)
+Deployment Type: integration
+Integration: toast (or google, yelp, opentable, resy, instagram, facebook)
+Single workflow file: (not applicable)
 ```
 
 #### Deploy Single Workflow
 ```
 Deployment Type: single
-Workflow File: toast/post-toast-order-workflow.json
+Integration: (not applicable)
+Single workflow file: toast/post-toast-order-workflow.json (select from dropdown)
 ```
+
+**Note:** The "Single workflow file" dropdown contains all 16 workflows across 7 integrations for easy selection.
 
 5. Click **Run workflow**
 6. Monitor the deployment in the Actions tab
@@ -177,7 +182,13 @@ Deployment Type: all
 
 Deploy all workflows for a specific integration:
 
-**Available Options:**
+**GitHub Actions UI:**
+```
+Deployment Type: integration
+Integration: toast (select from dropdown)
+```
+
+**Available Integrations:**
 - `toast` - Deploy all Toast POS workflows (4)
 - `google` - Deploy all Google Business Profile workflows (2)
 - `yelp` - Deploy all Yelp workflows (2)
@@ -186,52 +197,29 @@ Deploy all workflows for a specific integration:
 - `instagram` - Deploy Instagram workflows (3)
 - `facebook` - Deploy Facebook workflows (3)
 
-**Example:**
-```
-Deployment Type: toast
-```
-
 ### 3. Deploy Single Workflow
 
 Deploy one specific workflow file:
 
-**Example:**
+**GitHub Actions UI:**
 ```
 Deployment Type: single
-Workflow File: google/put-google-review-reply-workflow.json
+Single workflow file: toast/post-toast-order-workflow.json (select from dropdown)
 ```
 
-**Valid Workflow Paths:**
+**Available Workflows in Dropdown (16 total):**
 
-**Toast:**
-- `toast/post-toast-order-workflow.json`
-- `toast/get-toast-order-workflow.json`
-- `toast/get-toast-menu-workflow.json`
-- `toast/get-toast-restaurants-workflow.json`
+| Integration | Workflow Files |
+|-------------|---------------|
+| **Toast (4)** | `toast/post-toast-order-workflow.json`<br>`toast/get-toast-order-workflow.json`<br>`toast/get-toast-menu-workflow.json`<br>`toast/get-toast-restaurants-workflow.json` |
+| **Google (2)** | `google/get-google-reviews-workflow.json`<br>`google/put-google-review-reply-workflow.json` |
+| **Yelp (2)** | `yelp/get-yelp-reviews-workflow.json`<br>`yelp/put-yelp-review-reply-workflow.json` |
+| **OpenTable (1)** | `opentable/get-opentable-reservations-workflow.json` |
+| **Resy (1)** | `resy/get-resy-reservations-workflow.json` |
+| **Instagram (3)** | `instagram/post-instagram-content-workflow.json`<br>`instagram/post-instagram-comment-workflow.json`<br>`instagram/put-instagram-comment-reply-workflow.json` |
+| **Facebook (3)** | `facebook/post-facebook-content-workflow.json`<br>`facebook/post-facebook-comment-workflow.json`<br>`facebook/put-facebook-comment-reply-workflow.json` |
 
-**Google:**
-- `google/get-google-reviews-workflow.json`
-- `google/put-google-review-reply-workflow.json`
-
-**Yelp:**
-- `yelp/get-yelp-reviews-workflow.json`
-- `yelp/put-yelp-review-reply-workflow.json`
-
-**OpenTable:**
-- `opentable/get-opentable-reservations-workflow.json`
-
-**Resy:**
-- `resy/get-resy-reservations-workflow.json`
-
-**Instagram:**
-- `instagram/post-instagram-content-workflow.json`
-- `instagram/post-instagram-comment-workflow.json`
-- `instagram/put-instagram-comment-reply-workflow.json`
-
-**Facebook:**
-- `facebook/post-facebook-content-workflow.json`
-- `facebook/post-facebook-comment-workflow.json`
-- `facebook/put-facebook-comment-reply-workflow.json`
+**Note:** All 16 workflows are available as dropdown options - no need to type file paths manually!
 
 ---
 

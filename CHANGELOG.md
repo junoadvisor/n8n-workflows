@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2026-06-08] - GitHub Actions UI Improvements
+
+### Updated - Deployment Interface
+- **`.github/workflows/deploy-n8n.yml`**: Improved deployment UI with separate dropdowns
+  - Split deployment type into 3 options: `all`, `single`, `integration`
+  - Added dedicated "Integration" dropdown for selecting provider (toast, google, yelp, etc.)
+  - Changed "Single workflow file" from text input to dropdown with all 16 workflows
+  - Improved user experience with pre-populated options
+  - No need to remember or type file paths manually
+
+### Updated - Deployment Logic
+- Added `integration` parameter handling
+- Updated case statement to handle new `integration` deployment type
+- Improved error messages for missing parameters
+- Added validation for integration selection
+
+### Updated - Documentation
+- **`docs/guides/GITHUB-ACTIONS-DEPLOYMENT.md`**: Updated with new UI structure
+  - Documented three deployment types (all, integration, single)
+  - Added table showing all 16 available workflows in dropdown
+  - Updated usage examples with new parameter names
+- **`README.md`**: Updated CI/CD quick setup section
+  - Clarified deployment type options
+  - Added dropdown selection details
+
+### User Experience Improvements
+- ✅ No more typing file paths manually
+- ✅ Select from dropdown of all 16 workflows
+- ✅ Clearer separation between deployment types
+- ✅ Separate dropdown for integration selection
+- ✅ Reduced user errors from typos in file paths
+
+---
+
 ## [2026-06-08] - GitHub Actions CI/CD Deployment
 
 ### Added - Automated Deployment
