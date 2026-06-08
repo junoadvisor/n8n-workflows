@@ -12,7 +12,8 @@ Welcome to the n8n Workflows documentation. This directory contains all technica
 - [Migration Guide](./guides/MIGRATION-GUIDE.md) - Deploy workflows to n8n
 
 ### Reference Documentation
-- [Credential Management Architecture](./reference/CREDENTIAL-MANAGEMENT-ARCHITECTURE.md) - **NEW!** Internal credential flow
+- [n8n Zero Credential Storage](./reference/N8N-ZERO-CREDENTIAL-STORAGE.md) - **NEW!** Security architecture
+- [Credential Management Architecture](./reference/CREDENTIAL-MANAGEMENT-ARCHITECTURE.md) - Internal credential flow
 - [Architecture](./reference/ARCHITECTURE.md) - System architecture and API endpoints
 - [Authentication Guide](./reference/AUTHENTICATION-GUIDE.md) - Authentication per provider
 - [Authentication Verification](./reference/AUTHENTICATION-VERIFICATION-SUMMARY.md) - Verification results
@@ -58,6 +59,7 @@ n8n-workflows/
 │   │   └── GOOGLE-TESTING-GUIDE.md    # Test Google workflows
 │   │
 │   ├── reference/                     # Technical reference
+│   │   ├── N8N-ZERO-CREDENTIAL-STORAGE.md  # n8n security architecture
 │   │   ├── CREDENTIAL-MANAGEMENT-ARCHITECTURE.md  # Internal credential architecture
 │   │   ├── ARCHITECTURE.md            # System architecture
 │   │   ├── AUTHENTICATION-GUIDE.md    # Auth specs per provider

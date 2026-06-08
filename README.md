@@ -25,6 +25,54 @@ API Client (Postman/Edge/etc.) → n8n Workflow → Backend API (Toast/Google/et
 
 ---
 
+## 🔒 Security: Zero Credential Storage
+
+**CRITICAL:** All n8n workflows implement **zero credential storage**.
+
+```
+🚫 n8n NEVER stores API keys, OAuth tokens, or credentials
+✅ Credentials passed at runtime via HTTP headers from Edge Functions
+✅ Tokens exist in memory for < 5 seconds only
+✅ Immediate disposal after API call
+✅ No persistence in workflow JSON, execution history, or variables
+```
+
+### How It Works
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Database (Supabase)                                        │
+│  • Encrypted credentials (AES-256-GCM)                      │
+│  • OAuth tokens with expiry tracking                        │
+│  • Automatic token refresh                                  │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+                     │ Edge Function retrieves & refreshes
+                     ↓
+┌─────────────────────────────────────────────────────────────┐
+│  n8n Workflow (Zero Storage)                                │
+│  1. Receives token in Authorization header (runtime)        │
+│  2. Extracts: $json.headers.authorization                   │
+│  3. Forwards to backend API                                 │
+│  4. Returns response                                        │
+│  5. Token disposed (never stored)                           │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+                     │ Forward with runtime token
+                     ↓
+┌─────────────────────────────────────────────────────────────┐
+│  Backend APIs                                               │
+│  • Toast, Google, Yelp, OpenTable, Resy, Instagram, FB     │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**📖 Security Documentation:**
+- [SECURITY-NOTICE.md](./SECURITY-NOTICE.md) - Quick reference
+- [N8N-ZERO-CREDENTIAL-STORAGE.md](./docs/reference/N8N-ZERO-CREDENTIAL-STORAGE.md) - Complete security architecture
+- [CREDENTIAL-MANAGEMENT-ARCHITECTURE.md](./docs/reference/CREDENTIAL-MANAGEMENT-ARCHITECTURE.md) - Full credential lifecycle
+
+---
+
 ## 📚 Documentation
 
 Complete documentation is available in the [`docs/`](./docs/) directory:

@@ -7,6 +7,121 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2026-06-08] - n8n Zero Credential Storage Documentation
+
+### Added - Security Architecture Documentation
+
+#### n8n Zero Credential Storage (`docs/reference/N8N-ZERO-CREDENTIAL-STORAGE.md`)
+Comprehensive technical documentation explaining how n8n workflows implement zero credential storage:
+
+**Core Principles:**
+- 🚫 n8n NEVER stores API keys, OAuth tokens, or credentials
+- ✅ Credentials passed at runtime via HTTP headers from Edge Functions
+- ✅ Tokens exist in memory for < 5 seconds only
+- ✅ Immediate disposal after API call
+- ✅ No persistence in workflow JSON, execution history, or variables
+
+**Contents:**
+- Architecture diagrams showing credential flow
+- Detailed workflow node structure
+- Security verification checklist
+- What gets stored where (comparison table)
+- Runtime token flow sequence diagrams
+- Token lifecycle (< 5 seconds)
+- Example implementations (Toast, Google)
+- Anti-patterns (what NOT to do)
+- Monitoring & compliance automation
+- Incident response procedures
+- FAQs
+
+**Security Features:**
+- Automated CI/CD checks for hardcoded credentials
+- GitHub Actions validation workflow
+- Developer training guidelines
+- Security audit checklist
+- Monthly review requirements
+
+#### Security Notice (`SECURITY-NOTICE.md`)
+Quick reference card for developers:
+- One-page summary of zero-credential-storage principle
+- Verification steps
+- Architecture diagram
+- Link to detailed documentation
+
+### Updated - Main Documentation
+
+#### README.md
+Added prominent security section:
+- Positioned after Architecture section for visibility
+- Includes credential flow diagram
+- Links to security documentation
+- Visual representation of zero-storage principle
+
+#### docs/README.md
+- Added N8N-ZERO-CREDENTIAL-STORAGE.md to reference section
+- Updated file structure diagram
+- Marked as NEW for visibility
+
+### Workflow Security Verification
+
+All 16 existing workflows already follow the correct pattern:
+- ✅ Use `authentication: "none"` on HTTP Request nodes
+- ✅ Receive credentials via `$json.headers.authorization`
+- ✅ Never hardcode API keys or tokens
+- ✅ Only store `N8N-WEBHOOK-KEY` for webhook validation
+- ✅ Headers populated from runtime expressions
+- ✅ No credential persistence
+
+### Key Architectural Points
+
+**What Gets Stored Where:**
+
+| Data Type | n8n Workflow | n8n Execution | n8n Variables | Database |
+|-----------|--------------|---------------|---------------|----------|
+| API Keys | ❌ Never | ❌ Never | ❌ Never | ✅ Encrypted |
+| OAuth Tokens | ❌ Never | ❌ Never | ❌ Never | ✅ Encrypted |
+| Request Headers | ❌ Never | ⚠️ Redacted | ✅ Runtime only | ❌ Never |
+| API Responses | ❌ Never | ✅ Yes | ✅ Runtime only | ✅ Yes |
+
+**Token Lifecycle:**
+```
+Created (Edge Function) → In Transit (header) → n8n Memory (execution)
+→ Forwarded (API call) → Disposed (immediate)
+Total: < 5 seconds | Storage: 0 seconds
+```
+
+### Security Enforcement
+
+**Automated Checks:**
+- CI/CD validation for hardcoded credentials
+- Regex patterns detect Bearer tokens, API keys
+- HTTP Request node authentication verification
+- Runtime expression validation
+
+**Developer Guidelines:**
+1. Never hardcode credentials
+2. Never use n8n Credential Manager for backend APIs
+3. Always receive credentials via headers
+4. Always use `authentication: "none"`
+5. Always use runtime expressions
+
+**DevOps Requirements:**
+- Only `N8N-WEBHOOK-KEY` in n8n Credential Manager
+- Monthly security audits of workflow JSON
+- Execution history monitoring
+- Alert setup for violations
+
+### Files Added: 2
+- `docs/reference/N8N-ZERO-CREDENTIAL-STORAGE.md` (comprehensive security architecture)
+- `SECURITY-NOTICE.md` (quick reference)
+
+### Files Updated: 3
+- `README.md` (added security section)
+- `docs/README.md` (added new document references)
+- `CHANGELOG.md` (this entry)
+
+---
+
 ## [2026-06-08] - Restaurant Owner Setup Guides
 
 ### Added - Comprehensive Configuration Guides
