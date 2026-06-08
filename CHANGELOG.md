@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2026-06-08] - Documentation Cleanup: Remove Supabase References
+
+### Fixed - Outdated Architecture References
+- **Integration READMEs**: Removed all "Supabase backend" references
+  - `opentable/README.md`: Updated 3 instances to "backend API"
+  - `resy/README.md`: Updated 3 instances to "backend API"
+  - `yelp/README.md`: Updated 2 instances (changed to "Yelp Fusion API" and "backend API")
+- **Main Documentation**: Updated references in README.md and CHANGELOG.md
+  - Changed "Supabase backend" to "backend API"
+  - Updated troubleshooting sections
+  - Fixed historical changelog entries for consistency
+
+### Architecture Clarification
+The workflows call backend APIs directly:
+- ✅ **OpenTable** → Backend API (OpenTable authentication)
+- ✅ **Resy** → Backend API (Resy authentication)
+- ✅ **Yelp** → Yelp Fusion API (direct API calls)
+
+**Note:** The credential name `SUPABASE-EDGE-API-KEY` remains unchanged in n8n workflows as it's the configured credential identifier, but the architecture no longer routes through Supabase Edge Functions.
+
+---
+
 ## [2026-06-08] - GitHub Actions UI Improvements
 
 ### Updated - Deployment Interface
@@ -339,7 +361,7 @@ All workflows now call backend APIs directly:
 - Validation for `Toast-Restaurant-External-ID` header (mandatory)
 - Error response node for missing required headers (returns 400)
 - Request logging with timestamp, headers, query params, and webhook URL
-- HTTP GET request to forward to Supabase backend
+- HTTP GET request to forward to backend API
 - Query parameter support for pagination (pageSize, page)
 - Query parameter support for filtering (lastModified)
 - Response webhook node to return menu data
@@ -391,7 +413,7 @@ All workflows now call backend APIs directly:
 - Validation for `Toast-Restaurant-External-ID` header (mandatory)
 - Error response node for missing required headers/parameters (returns 400)
 - Request logging with timestamp, headers, params, and webhook URL
-- HTTP GET request to forward to Supabase backend with order GUID
+- HTTP GET request to forward to backend API with order GUID
 - Response webhook node to return order details
 - Three-layer security architecture (Header Auth + 2 required headers)
 - Case-insensitive header validation
@@ -450,7 +472,7 @@ All workflows now call backend APIs directly:
 - Workflow name in JSON updated to "Post Toast Order Workflow" (matching n8n workflow name)
 
 ### Added
-- ~~SSL certificate support for HTTPS connections to Supabase backend~~ (Paused in v2.1.1)
+- ~~SSL certificate support for HTTPS connections to backend API~~ (Paused in v2.1.1)
 
 ### Removed
 - **BREAKING:** Deleted unsecured TypeScript source file `toast-order-workflow.ts`
@@ -517,7 +539,7 @@ All workflows now call backend APIs directly:
 - Initial "Toast Order Workflow" creation
 - Webhook trigger on `/toast/orders` endpoint
 - Request logging node
-- HTTP request node to forward to Supabase backend
+- HTTP request node to forward to backend API
 - Response webhook node to return backend response
 - Basic workflow structure with 4 nodes
 

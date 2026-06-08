@@ -62,7 +62,7 @@ This n8n workflow retrieves Yelp business reviews with **mandatory header authen
 2. Validates authentication via header credential
 3. Validates presence of `Authorization` header and `businessId` query parameter
 4. Logs all incoming requests with timestamps
-5. Forwards valid requests to Supabase backend
+5. Forwards valid requests to Yelp Fusion API
 6. Supports pagination via `limit` and `offset`
 7. Returns Yelp review data to caller
 8. Returns 400 errors for missing required parameters
@@ -423,11 +423,11 @@ This is a Yelp API restriction. Maximum 3 reviews per business. For more reviews
 
 ### Issue: Backend Connection Error
 
-**Cause:** Supabase backend is unreachable
+**Cause:** Backend API is unreachable
 
 **Solution:**
 1. Verify backend URL in "Forward to Backend" node
-2. Check Supabase backend logs
+2. Check backend API logs
 3. Ensure backend has Yelp API credentials configured
 
 ---

@@ -722,7 +722,7 @@ Check n8n UI → **Executions** for detailed logs
 
 **Solution:** 
 1. Verify backend URL in workflow
-2. Check Supabase backend is running
+2. Check backend API is running
 3. Review backend logs
 
 ---

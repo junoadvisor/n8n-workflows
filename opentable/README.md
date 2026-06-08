@@ -4,7 +4,7 @@
 **Last Updated:** 2026-06-08  
 **Status:** Development  
 
-This n8n workflow retrieves OpenTable restaurant reservations with **mandatory header authentication**, validates required parameters, logs requests, forwards to Supabase backend via **secure HTTPS**, and returns reservation data with date filtering and pagination.
+This n8n workflow retrieves OpenTable restaurant reservations with **mandatory header authentication**, validates required parameters, logs requests, forwards to backend API via **secure HTTPS**, and returns reservation data with date filtering and pagination.
 
 ---
 
@@ -38,7 +38,7 @@ This n8n workflow retrieves OpenTable restaurant reservations with **mandatory h
 2. Validates authentication via header credential
 3. Validates presence of `Authorization` header and `restaurantId` query parameter
 4. Logs all incoming requests with timestamps
-5. Forwards valid requests to Supabase backend
+5. Forwards valid requests to backend API
 6. Supports date filtering and pagination
 7. Returns OpenTable reservation data to caller
 8. Returns 400 errors for missing required parameters
@@ -415,11 +415,11 @@ Example: `2026-06-15`
 
 ### Issue: Backend Connection Error
 
-**Cause:** Supabase backend is unreachable
+**Cause:** Backend API is unreachable
 
 **Solution:**
 1. Verify backend URL in "Forward to Backend" node
-2. Check Supabase backend logs
+2. Check backend API logs
 3. Ensure backend has OpenTable API credentials configured
 4. Verify OAuth token is valid
 
