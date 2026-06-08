@@ -13,6 +13,7 @@ Welcome to the n8n Workflows documentation. This directory contains all technica
 
 ### Reference Documentation
 - [n8n Zero Credential Storage](./reference/N8N-ZERO-CREDENTIAL-STORAGE.md) - **NEW!** Security architecture
+- [Workflow Security Validation](./reference/WORKFLOW-SECURITY-VALIDATION.md) - **NEW!** Compliance audit report
 - [Credential Management Architecture](./reference/CREDENTIAL-MANAGEMENT-ARCHITECTURE.md) - Internal credential flow
 - [Architecture](./reference/ARCHITECTURE.md) - System architecture and API endpoints
 - [Authentication Guide](./reference/AUTHENTICATION-GUIDE.md) - Authentication per provider

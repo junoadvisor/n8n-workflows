@@ -7,6 +7,98 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2026-06-08] - Workflow Security Validation Report
+
+### Added - Security Compliance Audit
+
+#### Workflow Security Validation Report (`docs/reference/WORKFLOW-SECURITY-VALIDATION.md`)
+Comprehensive security audit of all 16 n8n workflows:
+
+**Status:** ✅ CERTIFIED COMPLIANT (100% - 16/16 workflows)
+
+**Validation Methodology:**
+- Automated credential detection scripts (Bearer tokens, API keys, OAuth)
+- Manual review of each workflow JSON
+- Authentication type verification
+- Header expression validation
+- Credential storage checks
+
+**Workflow-by-Workflow Analysis:**
+1. **Toast (4 workflows):** All compliant
+   - post-toast-order-workflow.json
+   - get-toast-order-workflow.json
+   - get-toast-menu-workflow.json
+   - get-toast-restaurants-workflow.json
+
+2. **Google (2 workflows):** All compliant
+   - get-google-reviews-workflow.json
+   - put-google-review-reply-workflow.json
+
+3. **Yelp (2 workflows):** All compliant
+   - get-yelp-reviews-workflow.json
+   - put-yelp-review-reply-workflow.json
+
+4. **OpenTable (1 workflow):** Compliant
+   - get-opentable-reservations-workflow.json
+
+5. **Resy (1 workflow):** Compliant
+   - get-resy-reservations-workflow.json
+
+6. **Instagram (3 workflows):** All compliant
+   - post-instagram-content-workflow.json
+   - post-instagram-comment-workflow.json
+   - put-instagram-comment-reply-workflow.json
+
+7. **Facebook (3 workflows):** All compliant
+   - post-facebook-content-workflow.json
+   - post-facebook-comment-workflow.json
+   - put-facebook-comment-reply-workflow.json
+
+**Security Pattern Verified:**
+```
+✅ Webhook uses headerAuth for validation only
+✅ Headers validated at runtime: $json.headers.authorization
+✅ HTTP Request uses authentication: "none"
+✅ All credentials from runtime expressions
+✅ No hardcoded API keys or tokens
+✅ Token lifecycle: < 6 seconds, 0 storage
+```
+
+**Credential Storage Matrix:**
+| Location | API Keys | OAuth | Webhook | Data |
+|----------|----------|-------|---------|------|
+| Workflow JSON | ❌ Never | ❌ Never | ✅ Ref | ❌ Never |
+| Credential Mgr | ❌ Never | ❌ Never | ✅ Stored | ❌ Never |
+| Execution History | ❌ Redacted | ❌ Redacted | ❌ Never | ✅ Yes |
+| Variables | ⚠️ Runtime | ⚠️ Runtime | ❌ Never | ✅ Runtime |
+| Database | ✅ Encrypted | ✅ Encrypted | ✅ Encrypted | ✅ Yes |
+
+**Validation Scripts:**
+- `validate-credentials.sh` - Check for hardcoded credentials
+- `validate-authentication.sh` - Verify authentication type
+- `validate-runtime-expressions.sh` - Check runtime expressions
+
+**Compliance Certification:**
+- Date: 2026-06-08
+- Validator: NeuralTable Engineering Team
+- Result: 100% compliant (16/16 workflows)
+- Next Review: 2026-07-08 (monthly)
+
+**Recommendations:**
+- ✅ No immediate actions required
+- Monthly security audits
+- CI/CD integration for automated checks
+- Developer training ongoing
+- Monitoring for credential additions
+
+### Updated - Documentation
+
+#### docs/README.md
+- Added WORKFLOW-SECURITY-VALIDATION.md to reference section
+- Marked as NEW for visibility
+
+---
+
 ## [2026-06-08] - n8n Zero Credential Storage Documentation
 
 ### Added - Security Architecture Documentation
