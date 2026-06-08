@@ -1,0 +1,319 @@
+{
+  "name": "Get OpenTable Reservations Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "opentable/reservations",
+        "httpMethod": "GET",
+        "responseMode": "responseNode",
+        "authentication": "headerAuth"
+      },
+      "id": "webhook-trigger-opentable-reservations",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        300
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "SUPABASE-EDGE-API-KEY"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "auth-header-check",
+              "leftValue": "={{ $json.headers.authorization ?? $json.headers.Authorization }}",
+              "operator": {
+                "type": "string",
+                "operation": "isNotEmpty"
+              }
+            },
+            {
+              "id": "restaurant-id-check",
+              "leftValue": "={{ $json.query.restaurantId }}",
+              "operator": {
+                "type": "string",
+                "operation": "isNotEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "validate-headers-opentable",
+      "name": "Validate Required Headers and Params",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        540,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "error-status",
+              "name": "statusCode",
+              "value": 400,
+              "type": "number"
+            },
+            {
+              "id": "error-body",
+              "name": "body",
+              "value": "={{ { \"error\": \"Missing required parameters\", \"message\": \"Authorization header and restaurantId query parameter are required\" } }}",
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "id": "missing-params-error-opentable",
+      "name": "Return Error Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        840,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.body }}",
+        "options": {
+          "responseCode": "={{ $json.statusCode }}",
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "return-error-response-opentable",
+      "name": "Return Error to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1140,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": true,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "log-timestamp",
+              "name": "logTimestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "log-headers",
+              "name": "logHeaders",
+              "value": "={{ $json.headers }}",
+              "type": "object"
+            },
+            {
+              "id": "log-query",
+              "name": "logQuery",
+              "value": "={{ $json.query }}",
+              "type": "object"
+            },
+            {
+              "id": "webhook-url",
+              "name": "webhookUrl",
+              "value": "={{ $json.webhookUrl }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "log-request-opentable",
+      "name": "Log Request",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        840,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ \"https://platform.opentable.com/inhouse/v1/booking/\" + $json.query.restaurantId + \"/reservations\" }}",
+        "authentication": "none",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ $json.headers.authorization ?? $json.headers.Authorization }}"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "specifyQuery": "keypair",
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "restaurantId",
+              "value": "={{ $json.query.restaurantId }}"
+            },
+            {
+              "name": "startDate",
+              "value": "={{ $json.query.startDate ?? '' }}"
+            },
+            {
+              "name": "endDate",
+              "value": "={{ $json.query.endDate ?? '' }}"
+            },
+            {
+              "name": "status",
+              "value": "={{ $json.query.status ?? '' }}"
+            },
+            {
+              "name": "pageSize",
+              "value": "={{ $json.query.pageSize ?? '' }}"
+            },
+            {
+              "name": "page",
+              "value": "={{ $json.query.page ?? '' }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "forward-to-backend-opentable",
+      "name": "Forward to OpenTable API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1140,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.body }}",
+        "options": {
+          "responseCode": "={{ $json.statusCode }}",
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "respond-to-webhook-opentable",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1440,
+        200
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Validate Required Headers and Params",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Required Headers and Params": {
+      "main": [
+        [
+          {
+            "node": "Log Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Return Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Return Error Response": {
+      "main": [
+        [
+          {
+            "node": "Return Error to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Request": {
+      "main": [
+        [
+          {
+            "node": "Forward to OpenTable API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Forward to OpenTable API": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "active": false,
+  "tags": []
+}

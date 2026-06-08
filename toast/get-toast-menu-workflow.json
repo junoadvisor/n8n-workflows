@@ -1,0 +1,311 @@
+{
+  "name": "Get Toast Menu Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "toast/menus",
+        "httpMethod": "GET",
+        "responseMode": "responseNode",
+        "authentication": "headerAuth"
+      },
+      "id": "webhook-trigger-menu",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        300
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "SUPABASE-EDGE-API-KEY"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "auth-header-check",
+              "leftValue": "={{ $json.headers.authorization ?? $json.headers.Authorization }}",
+              "operator": {
+                "type": "string",
+                "operation": "isNotEmpty"
+              }
+            },
+            {
+              "id": "restaurant-id-check",
+              "leftValue": "={{ $json.headers[\"toast-restaurant-external-id\"] ?? $json.headers[\"Toast-Restaurant-External-ID\"] }}",
+              "operator": {
+                "type": "string",
+                "operation": "isNotEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "validate-headers-menu",
+      "name": "Validate Required Headers",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        540,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "error-status",
+              "name": "statusCode",
+              "value": 400,
+              "type": "number"
+            },
+            {
+              "id": "error-body",
+              "name": "body",
+              "value": "={{ { \"error\": \"Missing required headers\", \"message\": \"Both Authorization and Toast-Restaurant-External-ID headers are required\" } }}",
+              "type": "object"
+            }
+          ]
+        }
+      },
+      "id": "missing-headers-error-menu",
+      "name": "Return Error Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        840,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.body }}",
+        "options": {
+          "responseCode": "={{ $json.statusCode }}",
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "return-error-response-menu",
+      "name": "Return Error to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1140,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": true,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "log-timestamp",
+              "name": "logTimestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "log-headers",
+              "name": "logHeaders",
+              "value": "={{ $json.headers }}",
+              "type": "object"
+            },
+            {
+              "id": "log-query",
+              "name": "logQuery",
+              "value": "={{ $json.query }}",
+              "type": "object"
+            },
+            {
+              "id": "webhook-url",
+              "name": "webhookUrl",
+              "value": "={{ $json.webhookUrl }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "log-request-menu",
+      "name": "Log Request",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        840,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.TOAST_API_HOSTNAME }}/menus/v2/menus",
+        "authentication": "none",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ $json.headers.authorization ?? $json.headers.Authorization }}"
+            },
+            {
+              "name": "Toast-Restaurant-External-ID",
+              "value": "={{ $json.headers[\"toast-restaurant-external-id\"] ?? $json.headers[\"Toast-Restaurant-External-ID\"] }}"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "specifyQuery": "keypair",
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "pageSize",
+              "value": "={{ $json.query.pageSize ?? '' }}"
+            },
+            {
+              "name": "page",
+              "value": "={{ $json.query.page ?? '' }}"
+            },
+            {
+              "name": "lastModified",
+              "value": "={{ $json.query.lastModified ?? '' }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "forward-to-backend-menu",
+      "name": "Forward to Toast API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1140,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.body }}",
+        "options": {
+          "responseCode": "={{ $json.statusCode }}",
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "respond-to-webhook-menu",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1440,
+        200
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Validate Required Headers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Required Headers": {
+      "main": [
+        [
+          {
+            "node": "Log Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Return Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Return Error Response": {
+      "main": [
+        [
+          {
+            "node": "Return Error to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Request": {
+      "main": [
+        [
+          {
+            "node": "Forward to Toast API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Forward to Toast API": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "active": false,
+  "tags": []
+}

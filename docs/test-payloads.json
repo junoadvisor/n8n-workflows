@@ -1,0 +1,398 @@
+{
+  "authentication": {
+    "description": "Generate OAuth authentication token",
+    "method": "POST",
+    "endpoint": "/authentication",
+    "payload": {
+      "clientId": "sandbox-client-abc123",
+      "clientSecret": "super-secret-key-xyz789",
+      "userAccessType": "TOAST_MACHINE_CLIENT"
+    },
+    "expectedResponse": {
+      "@class": ".SuccessfulResponse",
+      "token": {
+        "tokenType": "Bearer",
+        "expiresIn": 86400,
+        "accessToken": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."
+      },
+      "status": "SUCCESS"
+    }
+  },
+  "orders_prices": {
+    "description": "Calculate order pricing before submission",
+    "method": "POST",
+    "endpoint": "/orders",
+    "payload": {
+      "diningOption": {
+        "guid": "bd778436-933e-47f6-882e-0f20b0c8ba59"
+      },
+      "appliedPackagingInfo": {
+        "appliedPackagingItems": [
+          {
+            "itemConfigId": "51ea9081-0396-47c5-9a0f-bd131bf90751",
+            "inclusion": "YES"
+          },
+          {
+            "itemConfigId": "041c6f8d-c8ac-4ba4-942a-e2fb95a10f21",
+            "inclusion": "NO"
+          }
+        ]
+      },
+      "checks": [
+        {
+          "selections": [
+            {
+              "item": {
+                "guid": "d1f9b76a-1a0b-464f-b543-92e3d5a34ad9"
+              },
+              "itemGroup": {
+                "guid": "2934e30b-f45b-4eac-9d15-779ce4d8eae3"
+              },
+              "quantity": 2,
+              "modifiers": [
+                {
+                  "item": {
+                    "guid": "d7f8e9b0-79f9-49c5-8054-1fd3c07c9b65"
+                  },
+                  "optionGroup": {
+                    "guid": "6038ef27-a00e-451b-a77c-3042155847b9"
+                  },
+                  "quantity": 1
+                }
+              ]
+            },
+            {
+              "item": {
+                "guid": "40752bb3-fa42-4b90-a3da-07aa7d331ab7"
+              },
+              "itemGroup": {
+                "guid": "eda99087-d3ad-4bdd-88de-98f51dd87fc2"
+              },
+              "quantity": 1,
+              "modifiers": []
+            }
+          ],
+          "customer": {
+            "firstName": "Sarah",
+            "lastName": "Johnson",
+            "phone": "+1-617-555-0123",
+            "email": "sarah.johnson@example.com"
+          },
+          "appliedServiceCharges": [
+            {
+              "serviceCharge": {
+                "guid": "4e999c74-4428-4ce4-992f-07e27365f8d5"
+              }
+            }
+          ],
+          "tabName": "Online Order #12345",
+          "appliedDiscounts": [
+            {
+              "discountAmount": 200,
+              "discount": {
+                "guid": "7fa8598c-5a23-4e1e-96fe-4face5b2acff"
+              }
+            }
+          ]
+        }
+      ],
+      "deliveryInfo": {
+        "address1": "789 Commonwealth Avenue",
+        "address2": "Suite 301",
+        "city": "Boston",
+        "state": "MA",
+        "zipCode": "02215",
+        "latitude": 42.3505,
+        "longitude": -71.1054,
+        "notes": "Please call upon arrival. Gate code is 1234."
+      }
+    }
+  },
+  "orders_create": {
+    "description": "Create a new order",
+    "method": "POST",
+    "endpoint": "/orders",
+    "payload": {
+      "channelGuid": "online-ordering-channel-guid",
+      "source": "ONLINE_ORDERING",
+      "promisedDate": "2026-06-03T19:30:00.000Z",
+      "checks": [
+        {
+          "selections": [
+            {
+              "item": {
+                "guid": "classic-burger-guid"
+              },
+              "quantity": 1,
+              "preDiscountPrice": 1295,
+              "modifiers": [
+                {
+                  "item": {
+                    "guid": "extra-cheese-guid"
+                  },
+                  "quantity": 1,
+                  "preDiscountPrice": 100
+                },
+                {
+                  "item": {
+                    "guid": "bacon-guid"
+                  },
+                  "quantity": 2,
+                  "preDiscountPrice": 150
+                }
+              ]
+            },
+            {
+              "item": {
+                "guid": "french-fries-guid"
+              },
+              "quantity": 1,
+              "preDiscountPrice": 495
+            },
+            {
+              "item": {
+                "guid": "cola-drink-guid"
+              },
+              "quantity": 1,
+              "preDiscountPrice": 295
+            }
+          ],
+          "customer": {
+            "firstName": "Michael",
+            "lastName": "Chen",
+            "phone": "+1-857-555-4567",
+            "email": "michael.chen@example.com"
+          },
+          "payments": [
+            {
+              "paymentType": "CREDIT",
+              "amount": 2535,
+              "tipAmount": 500,
+              "cardType": "VISA",
+              "last4": "4242"
+            }
+          ]
+        }
+      ],
+      "deliveryInfo": {
+        "address1": "1255 Boylston Street",
+        "city": "Boston",
+        "state": "MA",
+        "zipCode": "02215",
+        "deliveryTime": "2026-06-03T19:30:00.000Z"
+      },
+      "requiredPrepTime": "PT25M"
+    }
+  },
+  "menus_get": {
+    "description": "Retrieve restaurant menus",
+    "method": "GET",
+    "endpoint": "/menus",
+    "payload": null,
+    "expectedResponse": [
+      {
+        "guid": "main-menu-guid",
+        "name": "Main Menu",
+        "visibility": "ALL",
+        "groups": [
+          {
+            "guid": "appetizers-group-guid",
+            "name": "Appetizers",
+            "items": [
+              {
+                "guid": "wings-item-guid",
+                "name": "Buffalo Wings",
+                "price": 1295,
+                "calories": 850
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "restaurants_get": {
+    "description": "Get restaurant information",
+    "method": "GET",
+    "endpoint": "/restaurants/restaurant-guid",
+    "payload": null,
+    "expectedResponse": {
+      "guid": "restaurant-guid",
+      "name": "Boston Burger Co",
+      "locationName": "Downtown Location",
+      "timeZone": "America/New_York",
+      "closeoutHour": 4
+    }
+  },
+  "stock_update": {
+    "description": "Update inventory stock count",
+    "method": "POST",
+    "endpoint": "/stock",
+    "payload": {
+      "itemGuid": "beef-patties-guid",
+      "quantity": 150,
+      "unit": "units",
+      "countType": "PHYSICAL_COUNT",
+      "reason": "Daily inventory",
+      "notes": "Received fresh delivery",
+      "countedBy": "emp-guid-123",
+      "countDate": "2026-06-03T10:00:00Z"
+    }
+  },
+  "labor_employees": {
+    "description": "Get employee list",
+    "method": "GET",
+    "endpoint": "/labor?type=employees",
+    "payload": null,
+    "expectedResponse": [
+      {
+        "guid": "emp-001",
+        "firstName": "Emily",
+        "lastName": "Rodriguez",
+        "email": "emily.r@restaurant.com",
+        "jobTitle": "Server",
+        "hourlyWage": 1500
+      }
+    ]
+  },
+  "cash_management_deposit": {
+    "description": "Record cash deposit",
+    "method": "POST",
+    "endpoint": "/cash-management",
+    "payload": {
+      "type": "DEPOSIT",
+      "amount": 100000,
+      "employeeGuid": "manager-guid-001",
+      "reason": "Opening Bank",
+      "date": "2026-06-03T08:00:00Z",
+      "registerGuid": "register-001",
+      "notes": "Morning opening cash"
+    }
+  },
+  "credit_card_payment": {
+    "description": "Process credit card payment",
+    "method": "POST",
+    "endpoint": "/credit-cards",
+    "payload": {
+      "checkGuid": "check-guid-456",
+      "amount": 4599,
+      "tipAmount": 920,
+      "paymentType": "CREDIT",
+      "cardEntryMode": "SWIPED",
+      "cardType": "MASTERCARD",
+      "last4": "5454",
+      "cardholderName": "JOHN DOE"
+    }
+  },
+  "kitchen_order": {
+    "description": "Send order to kitchen display",
+    "method": "POST",
+    "endpoint": "/kitchen",
+    "payload": {
+      "orderGuid": "order-789",
+      "prepStation": "Grill",
+      "priority": "HIGH",
+      "estimatedPrepTime": 15,
+      "items": [
+        {
+          "name": "Medium Rare Steak",
+          "quantity": 1,
+          "specialInstructions": "No butter"
+        }
+      ]
+    }
+  },
+  "partners_webhook": {
+    "description": "Register webhook for order events",
+    "method": "POST",
+    "endpoint": "/partners",
+    "payload": {
+      "url": "https://partner-api.example.com/webhooks/toast",
+      "events": [
+        "ORDER_CREATED",
+        "ORDER_UPDATED",
+        "ORDER_SENT_TO_KITCHEN",
+        "ORDER_COMPLETED",
+        "ORDER_CANCELLED"
+      ],
+      "description": "Production webhook for all order lifecycle events",
+      "active": true,
+      "secret": "webhook-secret-key-abc123"
+    }
+  },
+  "packaging_config": {
+    "description": "Get delivery packaging configuration",
+    "method": "GET",
+    "endpoint": "/packaging",
+    "payload": null,
+    "expectedResponse": [
+      {
+        "guid": "packaging-config-001",
+        "name": "Standard Delivery Package",
+        "items": [
+          {
+            "itemConfigId": "bag-large",
+            "name": "Large Delivery Bag",
+            "inclusion": "YES"
+          },
+          {
+            "itemConfigId": "utensils-set",
+            "name": "Plastic Utensils",
+            "inclusion": "OPTIONAL"
+          }
+        ]
+      }
+    ]
+  },
+  "order_management_settings": {
+    "description": "Update order management configuration",
+    "method": "PUT",
+    "endpoint": "/order-management",
+    "payload": {
+      "autoAcceptOrders": true,
+      "preparationTime": 30,
+      "deliveryRadius": 5,
+      "minDeliveryAmount": 1500,
+      "deliveryFee": 599,
+      "maxOrdersPerHour": 20,
+      "pauseNewOrders": false,
+      "orderThrottling": {
+        "enabled": true,
+        "maxConcurrentOrders": 10
+      }
+    }
+  },
+  "restaurant_availability": {
+    "description": "Update restaurant availability status",
+    "method": "PUT",
+    "endpoint": "/restaurant-availability",
+    "payload": {
+      "isOpen": true,
+      "nextCloseTime": "2026-06-03T22:00:00Z",
+      "diningOptions": [
+        {
+          "guid": "delivery-option-guid",
+          "name": "Delivery",
+          "available": true,
+          "estimatedTime": 35
+        },
+        {
+          "guid": "pickup-option-guid",
+          "name": "Pickup",
+          "available": true,
+          "estimatedTime": 15
+        },
+        {
+          "guid": "dinein-option-guid",
+          "name": "Dine In",
+          "available": false,
+          "reason": "At capacity"
+        }
+      ],
+      "temporaryHoursChange": {
+        "reason": "Special event",
+        "newCloseTime": "2026-06-03T23:00:00Z"
+      }
+    }
+  }
+}
