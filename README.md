@@ -70,8 +70,9 @@ n8n-workflows/
 │   ├── put-google-review-reply-workflow.json
 │   └── README.md
 │
-├── yelp/                              # Yelp Fusion API
+├── yelp/                              # Yelp Fusion & Partner API
 │   ├── get-yelp-reviews-workflow.json
+│   ├── put-yelp-review-reply-workflow.json
 │   └── README.md
 │
 ├── opentable/                         # OpenTable Platform
@@ -135,24 +136,28 @@ Workflows for managing Google Business Profile reviews:
 
 ---
 
-### 3. Yelp Fusion API Integration
+### 3. Yelp Fusion & Partner API Integration
 **Location:** `/yelp/`
 
-Workflows for retrieving Yelp business reviews:
+Workflows for retrieving and responding to Yelp business reviews:
 
 | Workflow | Method | Endpoint | Purpose |
 |----------|--------|----------|---------|
 | Get Yelp Reviews | GET | `/yelp/reviews` | Retrieve Yelp business reviews |
+| Reply to Review | POST | `/yelp/reviews/reply` | Respond to Yelp reviews (Partner API) |
 
 **Features:**
-- Pagination support (limit, offset)
-- Sort options (yelp_sort, rating, newest)
-- Returns reviewer details, ratings, and text
-- Maximum 3 reviews per business (Yelp API limitation)
+- **Get Reviews**: Pagination support (limit, offset), sort options, reviewer details
+- **Reply to Reviews**: Post public responses (requires Yelp Partner API access)
+- Maximum 3 reviews per business (Fusion API limitation)
+- Reply rate limit: 20 responses per location per day
+- UTF-8 text only (emojis not supported)
 
 **Documentation:** [yelp/README.md](./yelp/README.md)
 
-**API Reference:** [Yelp Fusion API](https://docs.developer.yelp.com/reference/v3_business_reviews)
+**API References:** 
+- [Yelp Fusion API](https://docs.developer.yelp.com/reference/v3_business_reviews)
+- [Yelp Respond to Reviews API](https://docs.developer.yelp.com/docs/respond-to-reviews-api-v2)
 
 ---
 
@@ -700,16 +705,16 @@ Check n8n UI → **Executions** for detailed logs
 
 | Integration | Type | Status | Workflows | Version |
 |-------------|------|--------|-----------|---------|
-| **Toast** | POS | ✅ Production-Ready | 3 | v2.1.1, v1.0.0 |
-| **Google** | Reviews | 🆕 New | 2 | v1.0.0 |
-| **Yelp** | Reviews | 🆕 New | 1 | v1.0.0 |
+| **Toast** | POS | ✅ Production-Ready | 4 | v2.1.1, v1.0.0 |
+| **Google** | Reviews | ✅ Production-Ready | 2 | v1.0.0 |
+| **Yelp** | Reviews | ✅ Production-Ready | 2 | v1.0.0 |
 | **OpenTable** | Reservations | 🆕 New | 1 | v1.0.0 |
 | **Resy** | Reservations | 🆕 New | 1 | v1.0.0 |
-| **Instagram** | Social Media | 🆕 New | 2 | v1.0.0 |
-| **Facebook** | Social Media | 🆕 New | 2 | v1.0.0 |
+| **Instagram** | Social Media | ✅ Production-Ready | 3 | v1.0.0 |
+| **Facebook** | Social Media | ✅ Production-Ready | 3 | v1.0.0 |
 
 **Total Integrations:** 7  
-**Total Workflows:** 12
+**Total Workflows:** 16
 
 ---
 

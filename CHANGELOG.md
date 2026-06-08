@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2026-06-08] - Yelp Reply Workflow
+
+### Added - Yelp Integration
+- **`yelp/put-yelp-review-reply-workflow.json`**: Reply to Yelp business reviews
+  - POST endpoint at `/yelp/reviews/reply`
+  - Yelp Partner API integration (`https://partner-api.yelp.com/reviews/v1/{reviewId}`)
+  - Requires Yelp Partnership contract (Partner API access)
+  - Public comment responses only
+  - Rate limit: 20 responses per location per day
+  - UTF-8 text only (no emoji support)
+  - Authentication: Bearer token (business owner OAuth)
+  - Request validation: Authorization header, reviewId, response_text
+  - Comprehensive error handling (401, 400, 403, 429)
+
+### Updated - Documentation
+- **`yelp/README.md`**: Complete documentation for reply workflow
+  - Added "Reply to Yelp Business Review" section
+  - Partner API requirements and limitations
+  - Authentication details and security features
+  - Setup instructions and testing examples
+  - API reference and error handling
+  - Troubleshooting guide for common issues
+  - Updated workflow count from 1 to 2
+- **`README.md`**: Updated main documentation
+  - Yelp integration description to include Partner API
+  - Workflow table updated with reply endpoint
+  - Added reply features and rate limits
+  - Updated workflow count: Yelp from 1 to 2
+  - Updated total workflows: 12 → 16
+  - Updated integration status to Production-Ready
+  - Added Yelp Partner API reference link
+
+### Integration Summary
+- **Yelp Workflows:** 2 (Get Reviews, Reply to Review)
+- **Total Workflows:** 16 across 7 integrations
+- **Status:** Production-Ready (requires Partner API access)
+
+---
+
 ## Development Standards & Testing
 
 ### [2026-06-08]
