@@ -12,12 +12,14 @@ Welcome to the n8n Workflows documentation. This directory contains all technica
 - [Migration Guide](./guides/MIGRATION-GUIDE.md) - Deploy workflows to n8n
 
 ### Reference Documentation
+- [Credential Management Architecture](./reference/CREDENTIAL-MANAGEMENT-ARCHITECTURE.md) - **NEW!** Internal credential flow
 - [Architecture](./reference/ARCHITECTURE.md) - System architecture and API endpoints
 - [Authentication Guide](./reference/AUTHENTICATION-GUIDE.md) - Authentication per provider
 - [Authentication Verification](./reference/AUTHENTICATION-VERIFICATION-SUMMARY.md) - Verification results
 - [Project Summary](./reference/SUMMARY.md) - Executive summary
 
 ### Guides
+- [Restaurant Owner Setup Guide](./guides/RESTAURANT-OWNER-SETUP-GUIDE.md) - **NEW!** Configure all integrations
 - [Migration Guide](./guides/MIGRATION-GUIDE.md) - Step-by-step deployment
 - [GitHub Actions Deployment](./guides/GITHUB-ACTIONS-DEPLOYMENT.md) - Automated CI/CD deployment
 - [Google Testing Guide](./guides/GOOGLE-TESTING-GUIDE.md) - Testing Google workflows
@@ -50,11 +52,13 @@ n8n-workflows/
 │   ├── README.md                      # This file - documentation index
 │   │
 │   ├── guides/                        # Step-by-step guides
+│   │   ├── RESTAURANT-OWNER-SETUP-GUIDE.md  # Restaurant owner configuration
 │   │   ├── MIGRATION-GUIDE.md         # Deploy workflows to n8n
 │   │   ├── GITHUB-ACTIONS-DEPLOYMENT.md  # Automated CI/CD deployment
 │   │   └── GOOGLE-TESTING-GUIDE.md    # Test Google workflows
 │   │
 │   ├── reference/                     # Technical reference
+│   │   ├── CREDENTIAL-MANAGEMENT-ARCHITECTURE.md  # Internal credential architecture
 │   │   ├── ARCHITECTURE.md            # System architecture
 │   │   ├── AUTHENTICATION-GUIDE.md    # Auth specs per provider
 │   │   ├── AUTHENTICATION-VERIFICATION-SUMMARY.md  # Verification results

@@ -7,6 +7,95 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2026-06-08] - Restaurant Owner Setup Guides
+
+### Added - Comprehensive Configuration Guides
+
+#### Restaurant Owner Setup Guide (`docs/guides/RESTAURANT-OWNER-SETUP-GUIDE.md`)
+Complete step-by-step guide for restaurant owners to configure all integrations:
+- **Toast POS:** API key generation, Restaurant GUID setup
+- **Google Business Profile:** OAuth configuration, location ID
+- **Yelp:** Developer app creation, API key, Business ID
+- **OpenTable:** API access request, client credentials
+- **Resy:** Partner API setup, venue ID configuration
+- **Instagram:** Business account setup, Facebook app integration
+- **Facebook:** Page setup, OAuth configuration, permissions
+
+**Features:**
+- 🎯 User-friendly language for non-technical users
+- ✅ Step-by-step instructions with screenshots references
+- 🔒 Security and privacy section
+- 📞 Support contact information
+- ⏱️ Expected timelines for each integration
+- 🆘 Common issues and troubleshooting
+
+#### Credential Management Architecture (`docs/reference/CREDENTIAL-MANAGEMENT-ARCHITECTURE.md`)
+Internal technical documentation for NeuralTable engineering team:
+- **Architecture Overview:** Complete system components diagram
+- **Data Flow:** Restaurant owner flow (steps 1-5) and internal flow (steps 6-10)
+- **Database Schema:** Complete SQL schemas for credential storage
+  - `integration_credentials` table
+  - `oauth_tokens` table
+  - `api_keys` table
+  - `encryption_keys` table
+  - `credential_audit_log` table
+- **Security Implementation:** AES-256-GCM encryption, KMS integration
+- **Token Management:** OAuth token lifecycle, automatic refresh strategy
+- **n8n Integration:** Zero credential storage in n8n workflows
+- **Monitoring & Alerts:** Metrics, alert rules, dashboard configurations
+- **Runbooks:** Incident response procedures
+
+### Documentation Structure
+
+```
+docs/
+├── guides/
+│   ├── RESTAURANT-OWNER-SETUP-GUIDE.md  # NEW - For restaurant owners
+│   ├── MIGRATION-GUIDE.md
+│   ├── GITHUB-ACTIONS-DEPLOYMENT.md
+│   └── GOOGLE-TESTING-GUIDE.md
+│
+└── reference/
+    ├── CREDENTIAL-MANAGEMENT-ARCHITECTURE.md  # NEW - For engineering team
+    ├── ARCHITECTURE.md
+    ├── AUTHENTICATION-GUIDE.md
+    └── ...
+```
+
+### Key Architectural Principles
+
+1. **Restaurant Owner Flow:**
+   1. Review setup guide
+   2. Go to each provider (Toast, Google, Yelp, etc.)
+   3. Configure security credentials
+   4. Copy and paste values into NeuralTable portal
+   5. NeuralTable saves encrypted credentials to database
+
+2. **Internal NeuralTable Flow:**
+   6. Edge Function retrieves credentials from database
+   7. Call provider APIs to get/refresh OAuth tokens
+   8. Store tokens with expiry dates
+   9. Edge Function calls n8n workflow with auth token
+   10. n8n workflow forwards to backend API
+   11. **n8n NEVER stores credentials or tokens**
+
+### Security Features
+
+- ✅ AES-256-GCM encryption at rest
+- ✅ KMS for key management
+- ✅ Automatic OAuth token refresh
+- ✅ Zero credential storage in n8n
+- ✅ Row Level Security (RLS)
+- ✅ Comprehensive audit logging
+- ✅ Token passed only in headers, never stored
+
+### Updated Documentation Index
+- Updated `docs/README.md` with new guide links
+- Added references to both new documents
+- Updated folder structure documentation
+
+---
+
 ## [2026-06-08] - Documentation Cleanup: Remove Supabase References
 
 ### Fixed - Outdated Architecture References
