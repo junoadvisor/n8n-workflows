@@ -157,6 +157,55 @@ curl -X POST http://localhost:5678/webhook/instagram/comments \
 
 ---
 
+## Workflow 3: Reply to Instagram Comment
+
+### Endpoint
+```
+PUT /instagram/comments/reply
+```
+
+### Purpose
+Reply to an existing Instagram comment.
+
+### Request Body
+
+```json
+{
+  "commentId": "17895695668004550",
+  "message": "Thank you for your comment! 🙏"
+}
+```
+
+### Required Fields
+- `commentId` - Instagram comment ID to reply to
+- `message` - Reply text (max 2,200 characters)
+
+### Example Request
+
+```bash
+curl -X PUT http://localhost:5678/webhook/instagram/comments/reply \
+  -H 'X-N8N-API-Key: your-secret-key' \
+  -H 'Authorization: Bearer your-facebook-access-token' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "commentId": "17895695668004550",
+    "message": "Thank you for your feedback! We appreciate it 🙏"
+  }'
+```
+
+### Response
+
+```json
+{
+  "id": "17895695668004551",
+  "message": "Thank you for your feedback! We appreciate it 🙏"
+}
+```
+
+**API Reference**: [Instagram Graph API - Comment Replies](https://developers.facebook.com/docs/instagram-api/reference/ig-comment/replies)
+
+---
+
 ## Security Features
 
 ### 🔐 Two-Layer Security
@@ -385,6 +434,7 @@ POST /functions/v1/instagram/comments
 
 - `post-instagram-content-workflow.json` - Post content workflow
 - `post-instagram-comment-workflow.json` - Post comment workflow
+- `put-instagram-comment-reply-workflow.json` - Reply to comment workflow
 - `README.md` - This file
 
 ---

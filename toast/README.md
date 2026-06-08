@@ -2,7 +2,7 @@
 
 **Provider**: Toast POS  
 **Type**: Restaurant Point-of-Sale System  
-**Workflows**: 3
+**Workflows**: 4
 
 This folder contains n8n workflows for integrating with the Toast POS API.
 
@@ -143,6 +143,59 @@ curl -X GET "http://localhost:5678/webhook/toast/menus?pageSize=50" \
 ```
 
 **API Reference**: [Toast Menus API](https://doc.toasttab.com/openapi/menus/)
+
+---
+
+### 4. Get Toast Restaurants (GET)
+
+**File**: `get-toast-restaurants-workflow.json`  
+**Endpoint**: `/toast/restaurants`  
+**Method**: GET
+
+Retrieve restaurant configuration information.
+
+**Query Parameters** (optional):
+- `pageSize` - Number of items per page (default: 100)
+- `page` - Page number (default: 1)
+- `lastModified` - Filter by last modified date (ISO 8601)
+
+**Request Headers**:
+```
+X-N8N-API-Key: your-webhook-key
+Authorization: Bearer <toast-api-token>
+Toast-Restaurant-External-ID: <restaurant-guid>
+```
+
+**Response**:
+```json
+{
+  "restaurants": [
+    {
+      "guid": "restaurant-guid",
+      "name": "Restaurant Name",
+      "locationName": "Location Name",
+      "description": "Restaurant description",
+      "timeZone": "America/New_York",
+      "closeoutHour": 4,
+      "management": {
+        "name": "Management Group Name"
+      },
+      "prepStationCount": 2,
+      "tables": []
+    }
+  ]
+}
+```
+
+**Example**:
+```bash
+curl -X GET "http://localhost:5678/webhook/toast/restaurants" \
+  -H 'X-N8N-API-Key: your-key' \
+  -H 'Authorization: Bearer token' \
+  -H 'Toast-Restaurant-External-ID: restaurant-123'
+```
+
+**API Reference**: [Toast Restaurants API](https://doc.toasttab.com/openapi/restaurants/overview/)
 
 ---
 
