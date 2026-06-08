@@ -100,13 +100,14 @@ n8n-workflows/
 ### 1. Toast POS Integration
 **Location:** `/toast/`
 
-Workflows for managing Toast POS orders and menus:
+Workflows for managing Toast POS orders, menus, and restaurant configuration:
 
 | Workflow | Method | Endpoint | Purpose |
 |----------|--------|----------|---------|
 | Post Toast Order | POST | `/toast/orders` | Create new orders |
 | Get Toast Order | GET | `/toast/orders/:orderGuid` | Retrieve order details |
 | Get Toast Menu | GET | `/toast/menus` | Retrieve menu items |
+| Get Toast Restaurants | GET | `/toast/restaurants` | Retrieve restaurant configuration |
 
 **Documentation:** [toast/README.md](./toast/README.md)
 
@@ -209,6 +210,7 @@ Workflows for Instagram content creation and engagement:
 |----------|--------|----------|---------|
 | Post Content | POST | `/instagram/posts` | Create Instagram posts |
 | Post Comment | POST | `/instagram/comments` | Comment on Instagram posts |
+| Reply to Comment | PUT | `/instagram/comments/reply` | Reply to existing comments |
 
 **Features:**
 - Post photos, videos, carousels, stories, reels
@@ -238,6 +240,7 @@ Workflows for Facebook page content management:
 |----------|--------|----------|---------|
 | Post Content | POST | `/facebook/posts` | Create Facebook page posts |
 | Post Comment | POST | `/facebook/comments` | Comment on Facebook posts |
+| Reply to Comment | PUT | `/facebook/comments/reply` | Reply to existing comments |
 
 **Features:**
 - Post text, photos, videos, links
