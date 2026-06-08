@@ -7,6 +7,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2026-06-08] - GitHub Actions CI/CD Deployment
+
+### Added - Automated Deployment
+- **`.github/workflows/deploy-n8n.yml`**: GitHub Actions workflow for automated deployment
+  - Deploy all workflows with one click
+  - Deploy by integration (toast, google, yelp, opentable, resy, instagram, facebook)
+  - Deploy single workflow file
+  - Auto-deployment on push to main branch
+  - Smart update detection (creates new or updates existing workflows)
+  - Comprehensive error handling and reporting
+  - Deployment summary with success/failure counts
+  - Support for manual trigger from GitHub Actions UI
+
+### Added - Deployment Documentation
+- **`docs/guides/GITHUB-ACTIONS-DEPLOYMENT.md`**: Complete CI/CD deployment guide
+  - Prerequisites and setup instructions
+  - GitHub Secrets configuration
+  - Usage examples for all deployment types
+  - Deployment monitoring and troubleshooting
+  - Security best practices
+  - Advanced usage patterns
+  - API rate limits and considerations
+
+### Updated - Documentation References
+- **`README.md`**: Added CI/CD deployment section
+  - Quick setup instructions
+  - Feature highlights
+  - Link to full deployment guide
+- **`docs/README.md`**: Added GitHub Actions deployment link
+  - Updated guides section
+  - Updated documentation structure
+
+### Deployment Options
+1. **Deploy All** - Deploy all 16 workflows across 7 integrations
+2. **Deploy by Integration** - Deploy specific provider workflows
+3. **Deploy Single** - Deploy one specific workflow file
+4. **Auto-deploy** - Automatic deployment on git push
+
+### Security Features
+- GitHub Secrets for API credentials
+- Minimal workflow permissions
+- Branch protection support
+- Audit trail via GitHub Actions logs
+
+---
+
 ## [2026-06-08] - Yelp Reply Workflow
 
 ### Added - Yelp Integration

@@ -21,6 +21,7 @@ API Client (Postman/Edge/etc.) → n8n Workflow → Backend API (Toast/Google/et
 **📖 Documentation:**
 - [ARCHITECTURE.md](./ARCHITECTURE.md) - Complete architecture documentation
 - [MIGRATION-GUIDE.md](./MIGRATION-GUIDE.md) - Migration from Supabase architecture
+- [GITHUB-ACTIONS-DEPLOYMENT.md](./docs/guides/GITHUB-ACTIONS-DEPLOYMENT.md) - Automated CI/CD deployment
 
 ---
 
@@ -32,6 +33,7 @@ Complete documentation is available in the [`docs/`](./docs/) directory:
 - **[Architecture Guide](./docs/reference/ARCHITECTURE.md)** - System architecture and API endpoints
 - **[Authentication Guide](./docs/reference/AUTHENTICATION-GUIDE.md)** - Authentication per provider
 - **[Migration Guide](./docs/guides/MIGRATION-GUIDE.md)** - Deploy workflows to n8n
+- **[GitHub Actions Deployment](./docs/guides/GITHUB-ACTIONS-DEPLOYMENT.md)** - Automated CI/CD deployment
 - **[Google Testing Guide](./docs/guides/GOOGLE-TESTING-GUIDE.md)** - Test Google workflows
 - **[Verification Scripts](./docs/scripts/)** - Automated verification tools
 
@@ -291,7 +293,42 @@ All workflows share the same security pattern:
 
 ---
 
-## 📦 Quick Start
+## 🚀 CI/CD Deployment
+
+### Automated Deployment with GitHub Actions
+
+This repository includes GitHub Actions workflows for automated deployment to n8n Cloud:
+
+#### Features
+- ✅ **Deploy All Workflows** - One-click deployment of all 16 workflows
+- ✅ **Deploy by Integration** - Deploy specific provider (toast, google, yelp, etc.)
+- ✅ **Deploy Single Workflow** - Deploy individual workflow files
+- ✅ **Auto-deployment** - Automatically deploy on push to main
+- ✅ **Smart Updates** - Automatically update existing workflows
+- ✅ **Error Handling** - Comprehensive error reporting
+
+#### Quick Setup
+
+1. **Add GitHub Secrets** (Settings > Secrets > Actions):
+   - `N8N_CLOUD_URL` - Your n8n Cloud workspace URL
+   - `N8N_API_KEY` - Your n8n Cloud API key
+
+2. **Manual Deployment**:
+   - Go to **Actions** tab
+   - Select **Deploy n8n Workflows**
+   - Click **Run workflow**
+   - Choose deployment type (all, toast, google, etc.)
+   - Click **Run workflow**
+
+3. **Auto-deployment**:
+   - Push changes to main branch
+   - GitHub Actions automatically deploys updated workflows
+
+**📖 Full Guide:** [GitHub Actions Deployment Documentation](./docs/guides/GITHUB-ACTIONS-DEPLOYMENT.md)
+
+---
+
+## 📦 Manual Setup (Alternative)
 
 ### 1. Configure Environment Variables
 

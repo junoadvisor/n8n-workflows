@@ -1,0 +1,262 @@
+name: Deploy n8n Workflows
+
+on:
+  # Manual trigger with workflow selection
+  workflow_dispatch:
+    inputs:
+      deployment_type:
+        description: 'Deployment Type'
+        required: true
+        type: choice
+        options:
+          - all
+          - toast
+          - google
+          - yelp
+          - opentable
+          - resy
+          - instagram
+          - facebook
+          - single
+        default: 'all'
+      
+      workflow_file:
+        description: 'Single workflow file (if deployment_type is "single")'
+        required: false
+        type: string
+        default: ''
+
+  # Auto-deploy on push to main
+  push:
+    branches:
+      - main
+    paths:
+      - '**/*.json'
+      - '!.github/**'
+
+  # Auto-deploy on PR merge
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+env:
+  N8N_API_URL: ${{ secrets.N8N_CLOUD_URL }}
+  N8N_API_KEY: ${{ secrets.N8N_API_KEY }}
+
+jobs:
+  deploy:
+    name: Deploy to n8n Cloud
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          npm install -g n8n-node-cli 2>/dev/null || echo "Using curl for API calls"
+
+      - name: Validate environment
+        run: |
+          if [ -z "${{ secrets.N8N_CLOUD_URL }}" ]; then
+            echo "❌ Error: N8N_CLOUD_URL secret is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.N8N_API_KEY }}" ]; then
+            echo "❌ Error: N8N_API_KEY secret is not set"
+            exit 1
+          fi
+          echo "✅ Environment validated"
+
+      - name: Determine deployment scope
+        id: scope
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            DEPLOYMENT_TYPE="${{ github.event.inputs.deployment_type }}"
+            WORKFLOW_FILE="${{ github.event.inputs.workflow_file }}"
+          else
+            # Auto deployment on push - deploy all workflows
+            DEPLOYMENT_TYPE="all"
+            WORKFLOW_FILE=""
+          fi
+          
+          echo "deployment_type=${DEPLOYMENT_TYPE}" >> $GITHUB_OUTPUT
+          echo "workflow_file=${WORKFLOW_FILE}" >> $GITHUB_OUTPUT
+          echo "📦 Deployment Type: ${DEPLOYMENT_TYPE}"
+          echo "📄 Workflow File: ${WORKFLOW_FILE}"
+
+      - name: Deploy workflows
+        run: |
+          set -e
+          
+          DEPLOYMENT_TYPE="${{ steps.scope.outputs.deployment_type }}"
+          WORKFLOW_FILE="${{ steps.scope.outputs.workflow_file }}"
+          
+          # Function to deploy a single workflow file
+          deploy_workflow() {
+            local file=$1
+            local filename=$(basename "$file")
+            local folder=$(dirname "$file" | xargs basename)
+            
+            echo "🚀 Deploying: $folder/$filename"
+            
+            # Read workflow JSON
+            WORKFLOW_JSON=$(cat "$file")
+            
+            # Extract workflow name from JSON
+            WORKFLOW_NAME=$(echo "$WORKFLOW_JSON" | jq -r '.name // "Unnamed Workflow"')
+            
+            # Check if workflow already exists
+            echo "🔍 Checking if workflow exists: $WORKFLOW_NAME"
+            EXISTING_ID=$(curl -s -X GET \
+              "${{ secrets.N8N_CLOUD_URL }}/api/v1/workflows" \
+              -H "X-N8N-API-KEY: ${{ secrets.N8N_API_KEY }}" \
+              -H "Content-Type: application/json" | \
+              jq -r --arg name "$WORKFLOW_NAME" '.data[] | select(.name == $name) | .id' | head -n 1)
+            
+            if [ -n "$EXISTING_ID" ] && [ "$EXISTING_ID" != "null" ]; then
+              # Update existing workflow
+              echo "♻️  Updating existing workflow (ID: $EXISTING_ID)"
+              RESPONSE=$(curl -s -X PATCH \
+                "${{ secrets.N8N_CLOUD_URL }}/api/v1/workflows/$EXISTING_ID" \
+                -H "X-N8N-API-KEY: ${{ secrets.N8N_API_KEY }}" \
+                -H "Content-Type: application/json" \
+                -d "$WORKFLOW_JSON")
+              
+              STATUS=$(echo "$RESPONSE" | jq -r '.id // "error"')
+              if [ "$STATUS" = "error" ]; then
+                echo "❌ Failed to update workflow: $WORKFLOW_NAME"
+                echo "$RESPONSE" | jq '.'
+                return 1
+              else
+                echo "✅ Successfully updated: $WORKFLOW_NAME (ID: $STATUS)"
+              fi
+            else
+              # Create new workflow
+              echo "🆕 Creating new workflow"
+              RESPONSE=$(curl -s -X POST \
+                "${{ secrets.N8N_CLOUD_URL }}/api/v1/workflows" \
+                -H "X-N8N-API-KEY: ${{ secrets.N8N_API_KEY }}" \
+                -H "Content-Type: application/json" \
+                -d "$WORKFLOW_JSON")
+              
+              STATUS=$(echo "$RESPONSE" | jq -r '.id // "error"')
+              if [ "$STATUS" = "error" ]; then
+                echo "❌ Failed to create workflow: $WORKFLOW_NAME"
+                echo "$RESPONSE" | jq '.'
+                return 1
+              else
+                echo "✅ Successfully created: $WORKFLOW_NAME (ID: $STATUS)"
+              fi
+            fi
+            
+            return 0
+          }
+          
+          # Main deployment logic
+          SUCCESS_COUNT=0
+          FAIL_COUNT=0
+          
+          case "$DEPLOYMENT_TYPE" in
+            all)
+              echo "📦 Deploying all workflows..."
+              for folder in toast google yelp opentable resy instagram facebook; do
+                if [ -d "$folder" ]; then
+                  echo ""
+                  echo "===== Deploying $folder workflows ====="
+                  for file in $folder/*.json; do
+                    if [ -f "$file" ]; then
+                      if deploy_workflow "$file"; then
+                        ((SUCCESS_COUNT++))
+                      else
+                        ((FAIL_COUNT++))
+                      fi
+                    fi
+                  done
+                fi
+              done
+              ;;
+            
+            single)
+              if [ -z "$WORKFLOW_FILE" ]; then
+                echo "❌ Error: workflow_file parameter is required when deployment_type is 'single'"
+                exit 1
+              fi
+              
+              if [ ! -f "$WORKFLOW_FILE" ]; then
+                echo "❌ Error: Workflow file not found: $WORKFLOW_FILE"
+                exit 1
+              fi
+              
+              echo "📦 Deploying single workflow: $WORKFLOW_FILE"
+              if deploy_workflow "$WORKFLOW_FILE"; then
+                ((SUCCESS_COUNT++))
+              else
+                ((FAIL_COUNT++))
+              fi
+              ;;
+            
+            *)
+              # Deploy specific integration (toast, google, etc.)
+              if [ ! -d "$DEPLOYMENT_TYPE" ]; then
+                echo "❌ Error: Integration folder not found: $DEPLOYMENT_TYPE"
+                exit 1
+              fi
+              
+              echo "📦 Deploying $DEPLOYMENT_TYPE workflows..."
+              for file in $DEPLOYMENT_TYPE/*.json; do
+                if [ -f "$file" ]; then
+                  if deploy_workflow "$file"; then
+                    ((SUCCESS_COUNT++))
+                  else
+                    ((FAIL_COUNT++))
+                  fi
+                fi
+              done
+              ;;
+          esac
+          
+          # Summary
+          echo ""
+          echo "========================================="
+          echo "📊 Deployment Summary"
+          echo "========================================="
+          echo "✅ Successful: $SUCCESS_COUNT"
+          echo "❌ Failed: $FAIL_COUNT"
+          echo "========================================="
+          
+          if [ $FAIL_COUNT -gt 0 ]; then
+            exit 1
+          fi
+
+      - name: Post deployment notification
+        if: always()
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "✅ All workflows deployed successfully to n8n Cloud"
+          else
+            echo "❌ Some workflows failed to deploy"
+          fi
+
+      - name: Create deployment summary
+        if: always()
+        run: |
+          echo "## 🚀 n8n Cloud Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployment Type:** ${{ steps.scope.outputs.deployment_type }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Triggered by:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.scope.outputs.deployment_type }}" = "single" ]; then
+            echo "**Workflow File:** ${{ steps.scope.outputs.workflow_file }}" >> $GITHUB_STEP_SUMMARY
+          fi

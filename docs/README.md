@@ -19,6 +19,7 @@ Welcome to the n8n Workflows documentation. This directory contains all technica
 
 ### Guides
 - [Migration Guide](./guides/MIGRATION-GUIDE.md) - Step-by-step deployment
+- [GitHub Actions Deployment](./guides/GITHUB-ACTIONS-DEPLOYMENT.md) - Automated CI/CD deployment
 - [Google Testing Guide](./guides/GOOGLE-TESTING-GUIDE.md) - Testing Google workflows
 
 ### Utilities
@@ -50,6 +51,7 @@ n8n-workflows/
 │   │
 │   ├── guides/                        # Step-by-step guides
 │   │   ├── MIGRATION-GUIDE.md         # Deploy workflows to n8n
+│   │   ├── GITHUB-ACTIONS-DEPLOYMENT.md  # Automated CI/CD deployment
 │   │   └── GOOGLE-TESTING-GUIDE.md    # Test Google workflows
 │   │
 │   ├── reference/                     # Technical reference
